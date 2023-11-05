@@ -26,32 +26,43 @@ void CNumber::vSet(int iNewVal)
     }
     int counter = 0;
     int total_part = iNewVal;
-    int tmp_tablica[DEFAULT_ARRAY_LENGTH];
+    //int tmp_tablica[DEFAULT_ARRAY_LENGTH];
 
     while (total_part != 0)
     {
         int rest_part = total_part % NUMBER_SYSTEM;
-        tmp_tablica[DEFAULT_ARRAY_LENGTH - counter - 1] = rest_part;
+        pi_table[i_length - counter - 1] = rest_part;
         total_part /= NUMBER_SYSTEM;
         counter++;
     }
 
-    i_length = counter;
-    pi_table = new int[i_length];
-
-    for (int i = 0; i < counter; i++)
-    {
-        pi_table[i] = tmp_tablica[DEFAULT_ARRAY_LENGTH - counter + i];
+    if (iNewVal == 0) {
+        pi_table[0] == 0;
+        counter = 1;
     }
+    pi_table = vLessArray(pi_table, i_length, counter);
+    i_length = counter;
 }
 
 void CNumber::vSet(CNumber& pcOther)
 {
     pi_table = new int[pcOther.i_length];
-    for (int index = 0; index < pcOther.i_length; index++)
+    i_length = pcOther.i_length;
+    for (int i = 0; i < i_length; i++)
     {
-        pi_table[index] = pcOther.pi_table[index];
+        pi_table[i] = pcOther.pi_table[i];
     }
+}
+
+int* CNumber::vLessArray(int* bigArray, int old_length, int new_length)
+{
+    int* resultArray = new int[new_length];
+
+    for (int i = 0; i < new_length; i++)
+    {
+        resultArray[i] = bigArray[old_length - i_length + i];
+    }
+    return resultArray;
 }
 
 string CNumber::sToStr()
@@ -76,6 +87,9 @@ string CNumber::sToStr()
     return result;
 }
 
+void CNumber::operator=(const int iValue) {
+    this->vSet(iValue);
+}
 
 void CNumber::operator=(const CNumber& pcOther) {
     // It's just a shallow copy
@@ -92,6 +106,13 @@ CNumber CNumber::operator+(const CNumber pcOther)
     
     if (sign_minus == pcOther.sign_minus) {
         result = vAdd(*this, pcOther);
+        result.sign_minus = sign_minus;
+    }
+    else {
+        //TODO (first-bigger, second-lesser)
+        result = vSub(*this, pcOther);
+        result.sign_minus = sign_minus;
+
     }
 
     return result;
@@ -101,38 +122,47 @@ CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
 {
     CNumber result;
     int max_length = pcFirst.i_length > pcSecond.i_length ? pcFirst.i_length : pcSecond.i_length;
-
-    int tmp_array[TEMPORARY_ARRAY_LENGTH_MULTIPLY];
+    int counter = 0;
     int pcFirst_bit;
     int pcSecond_bit;
     int rest = 0;
     for (int i = 0; i <= max_length; i++) {
         if (i < pcFirst.i_length) {
-            pcFirst_bit = pcFirst.pi_table[i];
+            pcFirst_bit = pcFirst.pi_table[pcFirst.i_length - 1 - i];
         }
         else {
             pcFirst_bit = 0;
         }
         if (i < pcSecond.i_length) {
-            pcSecond_bit = pcSecond.pi_table[i];
+            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - 1 - i];
         }
         else {
             pcSecond_bit = 0;
         }
         int sum = pcFirst_bit + pcSecond_bit + rest;
-        if (sum >= NUMBER_SYSTEM) {
-            result.pi_table[TEMPORARY_ARRAY_LENGTH_MULTIPLY - i - 1] = sum - NUMBER_SYSTEM;
-            rest = sum / NUMBER_SYSTEM;
+        if (i < max_length) {
+            counter++;
+            if (sum >= NUMBER_SYSTEM) {
+                result.pi_table[result.i_length - i - 1] = sum - NUMBER_SYSTEM;
+                rest = sum / NUMBER_SYSTEM;
+            }
+            else {
+                result.pi_table[result.i_length - i - 1] = sum;
+                rest = 0;
+            }
         }
-        else {
-            result.pi_table[TEMPORARY_ARRAY_LENGTH_MULTIPLY - i - 1] = sum;
-            rest = 0;
+        else if (sum != 0) {
+            counter++;
+            result.pi_table[result.i_length - i - 1] = sum;
         }
     }
-
-        return result;
+    result.pi_table = vLessArray(result.pi_table, result.i_length, counter);
+    result.i_length = counter;
+    return result;
 }
 
-void CNumber::operator=(const int iValue) {
-    this->vSet(iValue);
+CNumber CNumber::vSub(const CNumber pcFirst, const CNumber pcSecond)
+{
+    return CNumber();
 }
+
