@@ -2,15 +2,31 @@
 #include "CNumber.h"
 using namespace std;
 
+CNumber::CNumber()
+{
+    i_length = DEFAULT_ARRAY_LENGTH;
+    sign_minus = false;
+    pi_table = new int[DEFAULT_ARRAY_LENGTH];
+}
 
-CNumber::CNumber(int number) {
-    if (number < 0) {
+CNumber::~CNumber()
+{
+    //cout << *pi_table << endl;
+    delete[] pi_table;
+    //cout << *pi_table << endl;
+    //cout << pi_table << endl;
+    cout << destr_text << endl;
+}
+
+void CNumber::vSet(int iNewVal)
+{
+    if (iNewVal < 0) {
         sign_minus = true;
-        number = -number;
+        iNewVal = - iNewVal;
     }
     int counter = 0;
-    int total_part = number;
-    int* tmp_tablica = new int[DEFAULT_ARRAY_LENGTH];
+    int total_part = iNewVal;
+    int tmp_tablica[DEFAULT_ARRAY_LENGTH];
 
     while (total_part != 0)
     {
@@ -29,54 +45,13 @@ CNumber::CNumber(int number) {
     }
 }
 
-
-
-CNumber::CNumber()
+void CNumber::vSet(CNumber& pcOther)
 {
-    //CNumber(3);
-}
-
-
-
-CNumber::~CNumber()
-{
-    //cout << destr_text << endl;
-    //cout << *pi_table << endl;
-    //delete[] pi_table;
-    //cout << *pi_table << endl;
-    //cout << pi_table << endl;
-    //cout << "object deleted" << endl;
-
-    if (*pi_table > 0)
+    pi_table = new int[pcOther.i_length];
+    for (int index = 0; index < pcOther.i_length; index++)
     {
-        cout << *pi_table << endl;
-        delete[] pi_table;
-        cout << *pi_table << endl;
-        cout << pi_table << endl;
-        cout << "deleted" << endl;
+        pi_table[index] = pcOther.pi_table[index];
     }
-
-}
-
-CNumber::CNumber(const CNumber& pcOther)
-{
-    //sign_minus = pcOther.sign_minus;
-    //i_length = pcOther.i_length;
-    //pi_table = new int[pcOther.i_length];
-
-    //for (int index = 0; index < pcOther.i_length; index++)
-    //{
-    //    pi_table[index] = pcOther.pi_table[index];
-    //}
-}
-
-
-void CNumber::printTable() {
-
-    for (int i = 0; i < i_length; i++) {
-        cout << pi_table[i] << endl;
-    }
-
 }
 
 string CNumber::sToStr()
@@ -101,25 +76,63 @@ string CNumber::sToStr()
     return result;
 }
 
+
 void CNumber::operator=(const CNumber& pcOther) {
+    // It's just a shallow copy
     //i_length = pcOther.i_length;
     //pi_table = pcOther.pi_table;
 
-    //*this = CNumber(pcOther);
+    // But we need deep copy
+    this->vSet((CNumber& )pcOther);
+}
+
+CNumber CNumber::operator+(const CNumber pcOther)
+{
+    CNumber result;
+    
+    if (sign_minus == pcOther.sign_minus) {
+        result = vAdd(*this, pcOther);
+    }
+
+    return result;
+}
+
+CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
+{
+    CNumber result;
+    int max_length = pcFirst.i_length > pcSecond.i_length ? pcFirst.i_length : pcSecond.i_length;
+
+    int tmp_array[TEMPORARY_ARRAY_LENGTH_MULTIPLY];
+    int pcFirst_bit;
+    int pcSecond_bit;
+    int rest = 0;
+    for (int i = 0; i <= max_length; i++) {
+        if (i < pcFirst.i_length) {
+            pcFirst_bit = pcFirst.pi_table[i];
+        }
+        else {
+            pcFirst_bit = 0;
+        }
+        if (i < pcSecond.i_length) {
+            pcSecond_bit = pcSecond.pi_table[i];
+        }
+        else {
+            pcSecond_bit = 0;
+        }
+        int sum = pcFirst_bit + pcSecond_bit + rest;
+        if (sum >= NUMBER_SYSTEM) {
+            result.pi_table[TEMPORARY_ARRAY_LENGTH_MULTIPLY - i - 1] = sum - NUMBER_SYSTEM;
+            rest = sum / NUMBER_SYSTEM;
+        }
+        else {
+            result.pi_table[TEMPORARY_ARRAY_LENGTH_MULTIPLY - i - 1] = sum;
+            rest = 0;
+        }
+    }
+
+        return result;
 }
 
 void CNumber::operator=(const int iValue) {
-    //*this = *new CNumber(iValue);
+    this->vSet(iValue);
 }
-
-
-
-
-
-
-
-
-
-
-
-
