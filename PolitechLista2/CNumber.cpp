@@ -7,11 +7,12 @@ CNumber::CNumber()
     i_length = DEFAULT_ARRAY_LENGTH;
     sign_minus = false;
     pi_table = new int[DEFAULT_ARRAY_LENGTH];
+    pi_table[63] = 0;
 }
 
 CNumber::~CNumber()
 {
-    //cout << *pi_table << endl;
+    cout << *pi_table << endl;
     delete[] pi_table;
     //cout << *pi_table << endl;
     //cout << pi_table << endl;
@@ -31,7 +32,7 @@ void CNumber::vSet(int iNewVal)
     while (total_part != 0)
     {
         int rest_part = total_part % NUMBER_SYSTEM;
-        pi_table[i_length - counter - 1] = rest_part;
+        pi_table[i_length - 1 - counter] = rest_part;
         total_part /= NUMBER_SYSTEM;
         counter++;
     }
@@ -60,7 +61,7 @@ int* CNumber::vLessArray(int* bigArray, int old_length, int new_length)
 
     for (int i = 0; i < new_length; i++)
     {
-        resultArray[i] = bigArray[old_length - i_length + i];
+        resultArray[i] = bigArray[old_length - new_length + i];
     }
     return resultArray;
 }
@@ -105,13 +106,13 @@ CNumber CNumber::operator+(const CNumber pcOther)
     CNumber result;
     
     if (sign_minus == pcOther.sign_minus) {
-        result = vAdd(*this, pcOther);
         result.sign_minus = sign_minus;
+        return vAdd(*this, pcOther); //TODO Stop point
     }
     else {
         //TODO (first-bigger, second-lesser)
-        result = vSub(*this, pcOther);
         result.sign_minus = sign_minus;
+        result = vSub(*this, pcOther);
 
     }
 
@@ -120,7 +121,7 @@ CNumber CNumber::operator+(const CNumber pcOther)
 
 CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
 {
-    CNumber result;
+    CNumber resultAdd;
     int max_length = pcFirst.i_length > pcSecond.i_length ? pcFirst.i_length : pcSecond.i_length;
     int counter = 0;
     int pcFirst_bit;
@@ -143,22 +144,22 @@ CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
         if (i < max_length) {
             counter++;
             if (sum >= NUMBER_SYSTEM) {
-                result.pi_table[result.i_length - i - 1] = sum - NUMBER_SYSTEM;
+                resultAdd.pi_table[resultAdd.i_length - 1 - i] = sum - NUMBER_SYSTEM;
                 rest = sum / NUMBER_SYSTEM;
             }
             else {
-                result.pi_table[result.i_length - i - 1] = sum;
+                resultAdd.pi_table[resultAdd.i_length - 1 - i] = sum; 
                 rest = 0;
             }
         }
         else if (sum != 0) {
             counter++;
-            result.pi_table[result.i_length - i - 1] = sum;
+            resultAdd.pi_table[resultAdd.i_length - i - 1] = sum;
         }
     }
-    result.pi_table = vLessArray(result.pi_table, result.i_length, counter);
-    result.i_length = counter;
-    return result;
+    resultAdd.pi_table = vLessArray(resultAdd.pi_table, resultAdd.i_length, counter);
+    resultAdd.i_length = counter;
+    return resultAdd;
 }
 
 CNumber CNumber::vSub(const CNumber pcFirst, const CNumber pcSecond)

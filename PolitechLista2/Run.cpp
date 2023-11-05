@@ -17,6 +17,7 @@ int main()
     c_num_1 = 123;
     cout << (c_num_1.sToStr()) << endl;
     c_num_2 = 45;
+    cout << (c_num_2.sToStr()) << endl;
 
     //c_num_0 = c_num_1;
     //cout << (c_num_0.sToStr()) << endl;
