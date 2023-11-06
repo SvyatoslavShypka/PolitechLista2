@@ -10,7 +10,7 @@ CNumber::CNumber()
     pi_table = new int[DEFAULT_ARRAY_LENGTH];
 }
 
-CNumber::CNumber(CNumber&& other)
+CNumber::CNumber(CNumber&& other) noexcept 
 {
     i_length = other.i_length;
     sign_minus = other.sign_minus;
@@ -21,13 +21,13 @@ CNumber::CNumber(CNumber&& other)
 CNumber::~CNumber()
 {
     //cout << pi_table << endl;
-    cout << *pi_table << endl;
+    //cout << *pi_table << endl;
     if (pi_table != nullptr) {
         delete[] pi_table;
         pi_table = nullptr; // Zabezpieczenie przed ponownym zwolnieniem
     }
     //cout << *pi_table << endl;
-    cout << destr_text << endl;
+    //cout << destr_text << endl;
 }
 
 void CNumber::vSet(int iNewVal)
@@ -115,7 +115,7 @@ void CNumber::operator=(const CNumber& pcOther) {
     this->vSet((CNumber& )pcOther);
 }
 
-CNumber& CNumber::operator=(CNumber&& other) {
+CNumber& CNumber::operator=(CNumber&& other) noexcept {
     if (this != &other) {
         // Zwolnij zasoby w obecnym obiekcie
         if (pi_table != nullptr) {
@@ -133,7 +133,7 @@ CNumber& CNumber::operator=(CNumber&& other) {
     return *this;
 }
 
-CNumber CNumber::operator+(CNumber pcOther)
+CNumber CNumber::operator+(CNumber& pcOther)
 {
     CNumber result;
     
@@ -200,4 +200,3 @@ CNumber CNumber::vSub(const CNumber pcFirst, const CNumber pcSecond)
 {
     return CNumber();
 }
-
