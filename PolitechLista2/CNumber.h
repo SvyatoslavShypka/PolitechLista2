@@ -1,5 +1,5 @@
 #pragma once
-
+#include <utility>
 #include <string>
 using namespace std;
 
@@ -9,9 +9,9 @@ private:
 	int i_length;
 	bool sign_minus;
 
-
 public:
 	CNumber();
+	CNumber(CNumber&& other); //Move construktor
 	~CNumber();
 	void vSet(int iNewVal);
 	void vSet(CNumber &pcNewVal);
@@ -19,6 +19,7 @@ public:
 	string sToStr();
 	void operator=(const int iValue);
 	void operator=(const CNumber &pcOther);
+	CNumber& operator=(CNumber&& other);
 	CNumber operator+(const CNumber pcOther);
 	CNumber vAdd(const CNumber pcFirst, const CNumber pcSecond);
 	CNumber vSub(const CNumber pcFirst, const CNumber pcSecond);
@@ -28,5 +29,4 @@ public:
 
 const int DEFAULT_ARRAY_LENGTH = 64;
 const int NUMBER_SYSTEM = 10;
-//const int TEMPORARY_ARRAY_LENGTH_MULTIPLY = 64;
 const string destr_text = "destruktor";

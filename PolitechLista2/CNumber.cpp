@@ -1,5 +1,6 @@
 #include <iostream>
 #include "CNumber.h"
+#include <utility>
 using namespace std;
 
 CNumber::CNumber()
@@ -7,15 +8,25 @@ CNumber::CNumber()
     i_length = DEFAULT_ARRAY_LENGTH;
     sign_minus = false;
     pi_table = new int[DEFAULT_ARRAY_LENGTH];
-    pi_table[63] = 0;
+}
+
+CNumber::CNumber(CNumber&& other)
+{
+    i_length = other.i_length;
+    sign_minus = other.sign_minus;
+    pi_table = other.pi_table;
+    other.pi_table = nullptr; // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
 }
 
 CNumber::~CNumber()
 {
-    cout << *pi_table << endl;
-    delete[] pi_table;
-    //cout << *pi_table << endl;
     //cout << pi_table << endl;
+    cout << *pi_table << endl;
+    if (pi_table != nullptr) {
+        delete[] pi_table;
+        pi_table = nullptr; // Zabezpieczenie przed ponownym zwolnieniem
+    }
+    //cout << *pi_table << endl;
     cout << destr_text << endl;
 }
 
@@ -47,6 +58,9 @@ void CNumber::vSet(int iNewVal)
 
 void CNumber::vSet(CNumber& pcOther)
 {
+    if (pi_table != nullptr) {
+        delete[] pi_table;
+    }
     pi_table = new int[pcOther.i_length];
     i_length = pcOther.i_length;
     for (int i = 0; i < i_length; i++)
@@ -55,14 +69,14 @@ void CNumber::vSet(CNumber& pcOther)
     }
 }
 
-int* CNumber::vLessArray(int* bigArray, int old_length, int new_length)
+int* CNumber::vLessArray(int* bigArray, int old_length, const int new_length)
 {
-    int* resultArray = new int[new_length];
-
+    int* resultArray = new int[new_length]; 
     for (int i = 0; i < new_length; i++)
     {
         resultArray[i] = bigArray[old_length - new_length + i];
     }
+    delete[] bigArray;
     return resultArray;
 }
 
@@ -101,20 +115,40 @@ void CNumber::operator=(const CNumber& pcOther) {
     this->vSet((CNumber& )pcOther);
 }
 
-CNumber CNumber::operator+(const CNumber pcOther)
+CNumber& CNumber::operator=(CNumber&& other) {
+    if (this != &other) {
+        // Zwolnij zasoby w obecnym obiekcie
+        if (pi_table != nullptr) {
+            delete[] pi_table;
+        }
+
+        // Przeniesienie zasobów z innego obiektu
+        i_length = other.i_length;
+        sign_minus = other.sign_minus;
+        pi_table = other.pi_table;
+
+        // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
+        other.pi_table = nullptr;
+    }
+    return *this;
+}
+
+CNumber CNumber::operator+(CNumber pcOther)
 {
     CNumber result;
     
     if (sign_minus == pcOther.sign_minus) {
         result.sign_minus = sign_minus;
-        return vAdd(*this, pcOther); //TODO Stop point
+        result = vAdd(std::move(*this), std::move(pcOther)); //TODO Stop point
     }
     else {
         //TODO (first-bigger, second-lesser)
         result.sign_minus = sign_minus;
-        result = vSub(*this, pcOther);
+        result = vSub(std::move(*this), std::move(pcOther));
 
     }
+    //cout << "this: " << this->sToStr() << endl;
+    //cout << "pcOther" << pcOther.sToStr() << endl;
 
     return result;
 }
@@ -144,7 +178,7 @@ CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
         if (i < max_length) {
             counter++;
             if (sum >= NUMBER_SYSTEM) {
-                resultAdd.pi_table[resultAdd.i_length - 1 - i] = sum - NUMBER_SYSTEM;
+                resultAdd.pi_table[resultAdd.i_length - 1 - i] = sum % NUMBER_SYSTEM;
                 rest = sum / NUMBER_SYSTEM;
             }
             else {
