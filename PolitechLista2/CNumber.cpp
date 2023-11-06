@@ -153,6 +153,27 @@ CNumber CNumber::operator+(CNumber& pcOther)
     return result;
 }
 
+CNumber CNumber::operator-(CNumber& pcOther)
+{
+    CNumber result;
+
+    if (sign_minus == pcOther.sign_minus) {
+        result.sign_minus = sign_minus;
+        result = vAdd(std::move(*this), std::move(pcOther)); //TODO Stop point
+    }
+    else {
+        //TODO (first-bigger, second-lesser)
+        result.sign_minus = sign_minus;
+        result = vSub(std::move(*this), std::move(pcOther));
+
+    }
+    //cout << "this: " << this->sToStr() << endl;
+    //cout << "pcOther" << pcOther.sToStr() << endl;
+
+    return result;
+
+}
+
 CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
 {
     CNumber resultAdd;
@@ -196,7 +217,46 @@ CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
     return resultAdd;
 }
 
-CNumber CNumber::vSub(const CNumber pcFirst, const CNumber pcSecond)
+CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
 {
-    return CNumber();
+    CNumber resultSub;
+    int max_length = pcBigger.i_length > pcLesser.i_length ? pcBigger.i_length : pcLesser.i_length;
+    int counter = 0;
+    int pcBigger_bit;
+    int pcLesser_bit;
+    int rest = 0;
+    for (int i = 0; i <= max_length; i++) {
+        if (i < pcBigger.i_length) {
+            pcBigger_bit = pcBigger.pi_table[pcBigger.i_length - 1 - i];
+        }
+        else {
+            pcBigger_bit = 0;
+        }
+        if (i < pcLesser.i_length) {
+            pcLesser_bit = pcLesser.pi_table[pcLesser.i_length - 1 - i];
+        }
+        else {
+            pcLesser_bit = 0;
+        }
+        int sum = pcBigger_bit + pcLesser_bit + rest;
+        if (i < max_length) {
+            counter++;
+            if (sum >= NUMBER_SYSTEM) {
+                resultSub.pi_table[resultSub.i_length - 1 - i] = sum % NUMBER_SYSTEM;
+                rest = sum / NUMBER_SYSTEM;
+            }
+            else {
+                resultSub.pi_table[resultSub.i_length - 1 - i] = sum;
+                rest = 0;
+            }
+        }
+        else if (sum != 0) {
+            counter++;
+            resultSub.pi_table[resultSub.i_length - i - 1] = sum;
+        }
+    }
+    resultSub.pi_table = vLessArray(resultSub.pi_table, resultSub.i_length, counter);
+    resultSub.i_length = counter;
+    return resultSub;
+
 }
