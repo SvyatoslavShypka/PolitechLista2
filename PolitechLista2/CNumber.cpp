@@ -49,7 +49,7 @@ void CNumber::vSet(int iNewVal)
     }
 
     if (iNewVal == 0) {
-        pi_table[0] == 0;
+        pi_table[0] = 0;
         counter = 1;
     }
     pi_table = vLessArray(pi_table, i_length, counter);
@@ -147,7 +147,7 @@ CNumber CNumber::operator+(CNumber& pcOther)
         //+A + -B = "sign of Bigger +/-" (Bigger - Lesser)
         //-A + +B = -//-
         //TODO (first-bigger, second-lesser)
-        CNumber bigger = vBigger(*this, pcOther);
+        //CNumber bigger = vBigger(*this, pcOther);
         result.sign_minus = sign_minus;
         result = vSub(std::move(*this), std::move(pcOther));
 
@@ -227,7 +227,7 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     CNumber resultSub;
     int max_length = pcBigger.i_length;
     int counter = 0;
-    int pcBigger_bit;
+    int pcBigger_bit = 0;
     int pcLesser_bit;
     int pozyczka = 0;
     for (int i = 0; i < max_length; i++) {
@@ -251,15 +251,11 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
         counter++;
         resultSub.pi_table[resultSub.i_length - 1 - i] = sub;
     }
-    //TODO change on this new one
     //delete first zeros
-    //for (int i = resultSub.i_length - pcBigger.i_length; i < resultSub.i_length - 1; i++) {
-    //    if (resultSub.pi_table[i] == 0) {
-    //    counter--;
-    //    }
-    //}
-    while (resultSub.pi_table[resultSub.i_length - counter] == 0) {
+    for (int i = resultSub.i_length - pcBigger.i_length; i < resultSub.i_length - 1; i++) {
+        if (resultSub.pi_table[i] == 0) {
         counter--;
+        }
     }
     resultSub.pi_table = vLessArray(resultSub.pi_table, resultSub.i_length, counter);
     resultSub.i_length = counter;
