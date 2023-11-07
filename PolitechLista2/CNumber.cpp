@@ -140,6 +140,9 @@ CNumber CNumber::operator+(CNumber& pcOther)
     if (sign_minus == pcOther.sign_minus) {
         //+A + +B = + (A+B)
         //-A + -B = - (A+B)
+        // TODO Check why error (not zero)
+        //CNumber bigger = vBigger(std::move(*this), std::move(pcOther));
+        //cout << bigger.sToStr() << "Bigger";
         result.sign_minus = sign_minus;
         result = vAdd(std::move(*this), std::move(pcOther));
     }
@@ -147,7 +150,8 @@ CNumber CNumber::operator+(CNumber& pcOther)
         //+A + -B = "sign of Bigger +/-" (Bigger - Lesser)
         //-A + +B = -//-
         //TODO (first-bigger, second-lesser)
-        //CNumber bigger = vBigger(*this, pcOther);
+        //CNumber bigger = vBigger(std::move(*this), std::move(pcOther));
+        //cout << bigger.sToStr() << "Bigger";
         result.sign_minus = sign_minus;
         result = vSub(std::move(*this), std::move(pcOther));
 
@@ -176,7 +180,6 @@ CNumber CNumber::operator-(CNumber& pcOther)
     //cout << "pcOther" << pcOther.sToStr() << endl;
 
     return result;
-
 }
 
 CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
@@ -261,7 +264,7 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     resultSub.i_length = counter;
     return resultSub;
 }
-
+//Find bigger CNumber
 CNumber CNumber::vBigger(CNumber pcFirst, CNumber pcSecond)
 {
     if (pcFirst.i_length > pcSecond.i_length) {
