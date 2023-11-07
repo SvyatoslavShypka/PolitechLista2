@@ -224,13 +224,10 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     int counter = 0;
     int pcBigger_bit;
     int pcLesser_bit;
-    int rest = 0;
-    for (int i = 0; i <= max_length; i++) {
+    int pozyczka = 0;
+    for (int i = 0; i < max_length; i++) {
         if (i < pcBigger.i_length) {
             pcBigger_bit = pcBigger.pi_table[pcBigger.i_length - 1 - i];
-        }
-        else {
-            pcBigger_bit = 0;
         }
         if (i < pcLesser.i_length) {
             pcLesser_bit = pcLesser.pi_table[pcLesser.i_length - 1 - i];
@@ -238,25 +235,22 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
         else {
             pcLesser_bit = 0;
         }
-        int sum = pcBigger_bit + pcLesser_bit + rest;
-        if (i < max_length) {
-            counter++;
-            if (sum >= NUMBER_SYSTEM) {
-                resultSub.pi_table[resultSub.i_length - 1 - i] = sum % NUMBER_SYSTEM;
-                rest = sum / NUMBER_SYSTEM;
-            }
-            else {
-                resultSub.pi_table[resultSub.i_length - 1 - i] = sum;
-                rest = 0;
-            }
+        int sub = 0;
+        if (pcBigger_bit - pozyczka < pcLesser_bit) {
+        sub = pcBigger_bit + NUMBER_SYSTEM - pozyczka - pcLesser_bit;
+        pozyczka = 1;
+        } else {
+        sub = pcBigger_bit - pozyczka - pcLesser_bit;
+        pozyczka = 0;
         }
-        else if (sum != 0) {
-            counter++;
-            resultSub.pi_table[resultSub.i_length - i - 1] = sum;
-        }
+        counter++;
+        resultSub.pi_table[resultSub.i_length - 1 - i] = sub;
+    }
+    //delete first zeros
+    while (resultSub.pi_table[resultSub.i_length - 1 - counter] == 0) {
+        counter--;
     }
     resultSub.pi_table = vLessArray(resultSub.pi_table, resultSub.i_length, counter);
     resultSub.i_length = counter;
     return resultSub;
-
 }
