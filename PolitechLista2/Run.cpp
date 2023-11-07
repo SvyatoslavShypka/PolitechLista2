@@ -10,7 +10,7 @@ int main()
     c_num_1 = 333;
 
     cout << (c_num_1.sToStr()) << endl;
-    c_num_2 = 111;
+    c_num_2 = 332;
 
     cout << (c_num_2.sToStr()) << endl;
 

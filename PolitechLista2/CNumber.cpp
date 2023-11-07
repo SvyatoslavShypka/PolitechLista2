@@ -138,11 +138,16 @@ CNumber CNumber::operator+(CNumber& pcOther)
     CNumber result;
     
     if (sign_minus == pcOther.sign_minus) {
+        //+A + +B = + (A+B)
+        //-A + -B = - (A+B)
         result.sign_minus = sign_minus;
-        result = vAdd(std::move(*this), std::move(pcOther)); //TODO Stop point
+        result = vAdd(std::move(*this), std::move(pcOther));
     }
     else {
+        //+A + -B = "sign of Bigger +/-" (Bigger - Lesser)
+        //-A + +B = -//-
         //TODO (first-bigger, second-lesser)
+        CNumber bigger = vBigger(*this, pcOther);
         result.sign_minus = sign_minus;
         result = vSub(std::move(*this), std::move(pcOther));
 
@@ -220,7 +225,7 @@ CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
 CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
 {
     CNumber resultSub;
-    int max_length = pcBigger.i_length > pcLesser.i_length ? pcBigger.i_length : pcLesser.i_length;
+    int max_length = pcBigger.i_length;
     int counter = 0;
     int pcBigger_bit;
     int pcLesser_bit;
@@ -246,11 +251,39 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
         counter++;
         resultSub.pi_table[resultSub.i_length - 1 - i] = sub;
     }
+    //TODO change on this new one
     //delete first zeros
-    while (resultSub.pi_table[resultSub.i_length - 1 - counter] == 0) {
+    //for (int i = resultSub.i_length - pcBigger.i_length; i < resultSub.i_length - 1; i++) {
+    //    if (resultSub.pi_table[i] == 0) {
+    //    counter--;
+    //    }
+    //}
+    while (resultSub.pi_table[resultSub.i_length - counter] == 0) {
         counter--;
     }
     resultSub.pi_table = vLessArray(resultSub.pi_table, resultSub.i_length, counter);
     resultSub.i_length = counter;
     return resultSub;
+}
+
+CNumber CNumber::vBigger(CNumber pcFirst, CNumber pcSecond)
+{
+    if (pcFirst.i_length > pcSecond.i_length) {
+        return pcFirst;
+    }
+    else if (pcFirst.i_length < pcSecond.i_length) {
+        return pcSecond;
+    }
+    else {
+        for (int i = 0; i < pcFirst.i_length; i++) {
+            int difference = pcFirst.pi_table[i] - pcSecond.pi_table[i];
+            if (difference > 0) {
+                return pcFirst;
+            }
+            else if (difference < 0) {
+                return pcSecond;
+            }
+        }
+        return pcFirst; //in case of pcFirst==pcSecond return pcFirst
+    }
 }

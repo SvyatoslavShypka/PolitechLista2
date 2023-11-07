@@ -24,6 +24,8 @@ public:
 	CNumber operator-(CNumber& pcOther);
 	CNumber vAdd(const CNumber pcFirst, const CNumber pcSecond);
 	CNumber vSub(const CNumber pcBigger, const CNumber pcLesser);
+	CNumber vBigger(CNumber pcFirst, CNumber pcSecond);
+
 
 };
 
