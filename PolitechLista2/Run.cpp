@@ -7,14 +7,14 @@ using namespace std;
 int main()
 {
     CNumber c_num_0, c_num_1, c_num_2;
-    c_num_1 = 2147483647;
+    c_num_1 = 333;
 
     cout << (c_num_1.sToStr()) << endl;
-    c_num_2 = 2147483647;
+    c_num_2 = 111;
 
     cout << (c_num_2.sToStr()) << endl;
 
-    c_num_0 = c_num_1 + c_num_2;
+    c_num_0 = c_num_1 - c_num_2;
 
     cout << (c_num_0.sToStr()) << endl;
 

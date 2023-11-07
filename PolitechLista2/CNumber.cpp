@@ -157,7 +157,7 @@ CNumber CNumber::operator-(CNumber& pcOther)
 {
     CNumber result;
 
-    if (sign_minus == pcOther.sign_minus) {
+    if (sign_minus != pcOther.sign_minus) {
         result.sign_minus = sign_minus;
         result = vAdd(std::move(*this), std::move(pcOther)); //TODO Stop point
     }
