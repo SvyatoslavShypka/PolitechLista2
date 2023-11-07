@@ -14,7 +14,6 @@ int main()
 
     cout << (c_num_2.sToStr()) << endl;
 
-
     c_num_0 = c_num_1 + c_num_2;
 
     cout << (c_num_0.sToStr()) << endl;
