@@ -15,6 +15,7 @@ public:
 	CNumber(const CNumber& other);
 	~CNumber();
 	void vSet(int iNewVal);
+	bool vGetSign();
 	void vSet(CNumber &pcNewVal);
 	int* vLessArray(int* bigArray, int old_length, int i_length);
 	string sToStr();
@@ -25,7 +26,7 @@ public:
 	CNumber operator-(CNumber& pcOther);
 	CNumber vAdd(CNumber pcFirst, CNumber pcSecond);
 	CNumber vSub(CNumber pcBigger, CNumber pcLesser);
-	CNumber vBigger(const CNumber pcFirst, const CNumber pcSecond);
+	CNumber& vBigger(CNumber& pcFirst, CNumber& pcSecond);
 
 };
 

@@ -56,6 +56,16 @@ void CNumber::vSet(int iNewVal)
     i_length = counter;
 }
 
+bool CNumber::vGetSign()
+{
+    if (sign_minus) {
+        return "-";
+    }
+    else {
+        return "";
+    }
+}
+
 void CNumber::vSet(CNumber& pcOther)
 {
     if (pi_table != nullptr) {
@@ -84,20 +94,19 @@ string CNumber::sToStr()
 {
     string result;
     if (sign_minus) {
-        result = "true";
+        result = "-";
     }
     else {
-        result = "false";
+        result = "";
     }
-    result = "{sign_minus = " + result + ", i_length = " + to_string(i_length) + ", pi_table = [";
     for (int i = 0; i < i_length; i++) {
         result += to_string(pi_table[i]);
-        if (i < i_length - 1) {
-            result += ", ";
-        }
-        else {
-            result = result + "]}\n";
-        }
+        //if (i < i_length - 1) {
+        //    result += "";
+        //}
+        //else {
+        //    result = result + "\n";
+        //}
     }
     return result;
 }
@@ -147,7 +156,7 @@ CNumber CNumber::operator+(CNumber& pcOther)
         //+A + -B = "sign of Bigger +/-" (Bigger - Lesser)
         //-A + +B = -//-
         //Find bigger and lesser
-        CNumber bigger = vBigger(*this, pcOther);
+        CNumber& bigger = vBigger(*this, pcOther);
         CNumber lesser;
         if (&bigger == this) {
             lesser = pcOther;
@@ -155,8 +164,8 @@ CNumber CNumber::operator+(CNumber& pcOther)
         else {
             lesser = *this;
         }
-        cout << "Bigger: " << bigger.sToStr();
-        cout << "Lesser: " << lesser.sToStr();
+        //cout << "Bigger: " << bigger.sToStr();
+        //cout << "Lesser: " << lesser.sToStr();
         result = vSub(bigger, lesser);
         // "sign of Bigger +/-"
         result.sign_minus = bigger.sign_minus;
@@ -171,7 +180,8 @@ CNumber CNumber::operator-(CNumber& pcOther)
     if (sign_minus != pcOther.sign_minus) {
         //+A - -B =   (A+B)
         //-A - +B = - (A+B)
-        result = vAdd(std::move(*this), std::move(pcOther));
+        //TODO changes!?
+        result = vAdd(*this, pcOther);
         if (pcOther.sign_minus) {
             result.sign_minus = false;
         }
@@ -181,26 +191,31 @@ CNumber CNumber::operator-(CNumber& pcOther)
     }
     else {
         //Find bigger and lesser
-        //+A - +B = "sign of Bigger +/-" (Bigger - Lesser)
-        //-A - -B = -//-
-        CNumber bigger = vBigger(*this, pcOther);
+        //+A - +B = (A - B); change sign for B; "sign of Bigger +/-" (Bigger - Lesser)
+        //-A - -B = (-A + B); -//-
+        pcOther.sign_minus = !pcOther.sign_minus;
+        CNumber& bigger = vBigger(*this, pcOther);
         CNumber lesser;
+        //cout << "&Bigger: " << &bigger << endl;
+        //cout << "this: " << this << endl;
+        //cout << "pcOther: " << &pcOther << endl;
+
         if (&bigger == this) {
             lesser = pcOther;
         }
         else {
             lesser = *this;
         }
-        cout << "Bigger: " << bigger.sToStr();
-        cout << "Lesser: " << lesser.sToStr();
+        //cout << "Bigger: " << bigger.sToStr();
+        //cout << "Lesser: " << lesser.sToStr();
         result = vSub(bigger, lesser);
+        //cout << "Result: " << result.sToStr();
         // "sign of Bigger +/-"
         result.sign_minus = bigger.sign_minus;
-
+        // put back sign for B
+        pcOther.sign_minus = !pcOther.sign_minus;
+        //cout << "Result: " << result.sToStr();
     }
-    //cout << "this: " << this->sToStr() << endl;
-    //cout << "pcOther" << pcOther.sToStr() << endl;
-
     return result;
 }
 
@@ -287,7 +302,7 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     return resultSub;
 }
 //Find bigger CNumber
-CNumber CNumber::vBigger(const CNumber pcFirst, const CNumber pcSecond)
+CNumber& CNumber::vBigger(CNumber& pcFirst, CNumber& pcSecond)
 {
     if (pcFirst.i_length > pcSecond.i_length) {
         return pcFirst;
@@ -305,8 +320,8 @@ CNumber CNumber::vBigger(const CNumber pcFirst, const CNumber pcSecond)
                 return pcSecond;
             }
         }
+        return pcFirst; // Jeśli oba obiekty są takie same, zwracamy jeden z nich (dowolny)
     }
-    return pcFirst; //in case of pcFirst==pcSecond return pcFirst
 }
 
 CNumber::CNumber(const CNumber& other) {
