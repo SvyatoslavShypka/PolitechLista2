@@ -22,7 +22,9 @@ int main()
     cout << c_num_1.sToStr() << " + " << c_num_2.sToStr() << " = ";
     cout << (c_num_0.sToStr()) << endl;
 
+    // *
 
+    // /
 
 
     return 0;
