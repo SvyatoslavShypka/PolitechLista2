@@ -140,10 +140,8 @@ CNumber CNumber::operator+(CNumber& pcOther)
     if (sign_minus == pcOther.sign_minus) {
         //+A + +B = + (A+B)
         //-A + -B = - (A+B)
-        // TODO Check why error (not zero)
-        
+        result = vAdd(*this, pcOther);
         result.sign_minus = sign_minus;
-        result = vAdd(move(*this), move(pcOther));
     }
     else {
         //+A + -B = "sign of Bigger +/-" (Bigger - Lesser)
