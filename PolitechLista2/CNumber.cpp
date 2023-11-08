@@ -148,7 +148,7 @@ CNumber CNumber::operator+(CNumber& pcOther)
     else {
         //+A + -B = "sign of Bigger +/-" (Bigger - Lesser)
         //-A + +B = -//-
-        //TODO (first-bigger, second-lesser)
+        //Find bigger and lesser
         CNumber bigger = vBigger(*this, pcOther);
         CNumber lesser;
         if (&bigger == this) {
@@ -161,11 +161,7 @@ CNumber CNumber::operator+(CNumber& pcOther)
         cout << "Lesser: " << lesser.sToStr();
         result = vSub(bigger, lesser);
         result.sign_minus = bigger.sign_minus;
-
     }
-    //cout << "this: " << this->sToStr() << endl;
-    //cout << "pcOther" << pcOther.sToStr() << endl;
-
     return result;
 }
 
