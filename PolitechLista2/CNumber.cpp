@@ -141,19 +141,26 @@ CNumber CNumber::operator+(CNumber& pcOther)
         //+A + +B = + (A+B)
         //-A + -B = - (A+B)
         // TODO Check why error (not zero)
-        //CNumber bigger = vBigger(std::move(*this), std::move(pcOther));
-        //cout << bigger.sToStr() << "Bigger";
+        
         result.sign_minus = sign_minus;
-        result = vAdd(std::move(*this), std::move(pcOther));
+        result = vAdd(move(*this), move(pcOther));
     }
     else {
         //+A + -B = "sign of Bigger +/-" (Bigger - Lesser)
         //-A + +B = -//-
         //TODO (first-bigger, second-lesser)
-        //CNumber bigger = vBigger(std::move(*this), std::move(pcOther));
-        //cout << bigger.sToStr() << "Bigger";
-        result.sign_minus = sign_minus;
-        result = vSub(std::move(*this), std::move(pcOther));
+        CNumber bigger = vBigger(*this, pcOther);
+        CNumber lesser;
+        if (&bigger == this) {
+            lesser = pcOther;
+        }
+        else {
+            lesser = *this;
+        }
+        cout << "Bigger: " << bigger.sToStr();
+        cout << "Lesser: " << lesser.sToStr();
+        result = vSub(bigger, lesser);
+        result.sign_minus = bigger.sign_minus;
 
     }
     //cout << "this: " << this->sToStr() << endl;
@@ -265,7 +272,7 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     return resultSub;
 }
 //Find bigger CNumber
-CNumber CNumber::vBigger(CNumber pcFirst, CNumber pcSecond)
+CNumber CNumber::vBigger(const CNumber pcFirst, const CNumber pcSecond)
 {
     if (pcFirst.i_length > pcSecond.i_length) {
         return pcFirst;
@@ -283,6 +290,17 @@ CNumber CNumber::vBigger(CNumber pcFirst, CNumber pcSecond)
                 return pcSecond;
             }
         }
-        return pcFirst; //in case of pcFirst==pcSecond return pcFirst
+    }
+    return pcFirst; //in case of pcFirst==pcSecond return pcFirst
+}
+
+CNumber::CNumber(const CNumber& other) {
+    // Skopiuj pola z obiektu other do bieżącego obiektu
+    i_length = other.i_length;
+    sign_minus = other.sign_minus;
+    pi_table = new int[i_length];
+    for (int i = 0; i < i_length; i++) {
+        pi_table[i] = other.pi_table[i];
     }
 }
+
