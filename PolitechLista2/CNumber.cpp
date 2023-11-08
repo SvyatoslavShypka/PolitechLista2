@@ -158,6 +158,7 @@ CNumber CNumber::operator+(CNumber& pcOther)
         cout << "Bigger: " << bigger.sToStr();
         cout << "Lesser: " << lesser.sToStr();
         result = vSub(bigger, lesser);
+        // "sign of Bigger +/-"
         result.sign_minus = bigger.sign_minus;
     }
     return result;
@@ -168,13 +169,33 @@ CNumber CNumber::operator-(CNumber& pcOther)
     CNumber result;
 
     if (sign_minus != pcOther.sign_minus) {
-        result.sign_minus = sign_minus;
-        result = vAdd(std::move(*this), std::move(pcOther)); //TODO Stop point
+        //+A - -B =   (A+B)
+        //-A - +B = - (A+B)
+        result = vAdd(std::move(*this), std::move(pcOther));
+        if (pcOther.sign_minus) {
+            result.sign_minus = false;
+        }
+        else {
+            result.sign_minus = true;
+        }
     }
     else {
-        //TODO (first-bigger, second-lesser)
-        result.sign_minus = sign_minus;
-        result = vSub(std::move(*this), std::move(pcOther));
+        //Find bigger and lesser
+        //+A - +B = "sign of Bigger +/-" (Bigger - Lesser)
+        //-A - -B = -//-
+        CNumber bigger = vBigger(*this, pcOther);
+        CNumber lesser;
+        if (&bigger == this) {
+            lesser = pcOther;
+        }
+        else {
+            lesser = *this;
+        }
+        cout << "Bigger: " << bigger.sToStr();
+        cout << "Lesser: " << lesser.sToStr();
+        result = vSub(bigger, lesser);
+        // "sign of Bigger +/-"
+        result.sign_minus = bigger.sign_minus;
 
     }
     //cout << "this: " << this->sToStr() << endl;
