@@ -86,14 +86,25 @@ void CNumber::vSet(CNumber& pcOther)
 
 int* CNumber::vLessArray(int* bigArray, int old_length, const int new_length)
 {
-    int* resultArray = new int[new_length]; 
+    int* resultArray = new int[new_length];
     for (int i = 0; i < new_length; i++)
     {
         resultArray[i] = bigArray[old_length - new_length + i];
     }
-    delete[] bigArray;
     return resultArray;
 }
+
+
+//int* CNumber::vLessArray(int* bigArray, int old_length, const int new_length)
+//{
+//    int* resultArray = new int[new_length]; 
+//    for (int i = 0; i < new_length; i++)
+//    {
+//        resultArray[i] = bigArray[old_length - new_length + i];
+//    }
+//    delete[] bigArray;
+//    return resultArray;
+//}
 
 string CNumber::sToStr()
 {
@@ -324,7 +335,7 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     return resultSub;
 }
 
-/*
+
 CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
 {
     CNumber resultSum;
@@ -340,14 +351,15 @@ CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
         int k = 0;
         for (int j = 0; j < pcSecond.i_length; j++) {
             //int k = i * pcSecond.i_length + j;
-            if (i > 0) {
+            if (i > 0 && j == 0) {
                 //zsuwanie wlewo ze wstawieniem zer
                 for (int zsuw = 0; zsuw < i; zsuw++) {
                     resultMultiply.pi_table[resultMultiply.i_length - 1 - zsuw] = 0;
+                    counter++;
                 }
-                k++;
+                k = counter;
             }
-            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - 1 - j - k];
+            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - 1 - j];
             int multi = pcFirst_bit * pcSecond_bit + rest;
             counter++;
             if (multi >= NUMBER_SYSTEM) {
@@ -374,44 +386,8 @@ CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
     //resultMultiply.i_length = counter;
     return resultSum;
 }
-*/
 
-CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
-{
-    CNumber resultSum;
-    resultSum.vSet(0);
 
-    for (int i = 0; i < pcFirst.i_length; ++i) {
-        CNumber resultMultiply;
-        CNumber tmpCNumber;
-        resultMultiply.vSet(0);
-
-        for (int j = 0; j < pcSecond.i_length; ++j) {
-            int product = pcFirst.pi_table[pcFirst.i_length - 1 - i] * pcSecond.pi_table[pcSecond.i_length - 1 - j];
-            tmpCNumber.vSet(product);
-            resultMultiply = resultMultiply + tmpCNumber;
-            if (j < pcSecond.i_length - 1) {
-                tmpCNumber.vSet(0); // Reset tmpCNumber to represent the multiplication by 10
-                tmpCNumber = (tmpCNumber + NUMBER_SYSTEM);
-                resultMultiply = resultMultiply * tmpCNumber;
-            }
-        }
-
-        resultSum = resultSum + resultMultiply;
-        if (i < pcFirst.i_length - 1) {
-            tmpCNumber.vSet(0); // Reset tmpCNumber to represent the multiplication by 10
-            tmpCNumber = tmpCNumber + NUMBER_SYSTEM;
-            resultSum = resultSum * tmpCNumber;
-        }
-    }
-
-    // Adjust the sign of the result
-    if (pcFirst.sign_minus != pcSecond.sign_minus) {
-        resultSum.sign_minus = true;
-    }
-
-    return resultSum;
-}
 
 
 //Find bigger CNumber
