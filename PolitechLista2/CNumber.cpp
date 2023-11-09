@@ -49,7 +49,7 @@ void CNumber::vSet(int iNewVal)
     }
 
     if (iNewVal == 0) {
-        pi_table[0] = 0;
+        pi_table[i_length - 1] = 0;
         counter = 1;
     }
     pi_table = vLessArray(pi_table, i_length, counter);
@@ -77,6 +77,7 @@ void CNumber::vSet(CNumber& pcOther)
     {
         pi_table[i] = pcOther.pi_table[i];
     }
+    pi_table = vLessArray(pi_table, i_length, pcOther.i_length);
 }
 
 int* CNumber::vLessArray(int* bigArray, int old_length, const int new_length)
@@ -135,6 +136,7 @@ CNumber& CNumber::operator=(CNumber&& other) noexcept {
         i_length = other.i_length;
         sign_minus = other.sign_minus;
         pi_table = other.pi_table;
+
 
         // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
         other.pi_table = nullptr;
@@ -317,47 +319,52 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     resultSub.i_length = counter;
     return resultSub;
 }
-CNumber CNumber::vMultiply(const CNumber pcBigger, const CNumber pcLesser)
+CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
 {
-    CNumber resultMultiply;
+    CNumber resultSum;
+    resultSum.vSet(0);
     int max_length = pcFirst.i_length > pcSecond.i_length ? pcFirst.i_length : pcSecond.i_length;
     int counter = 0;
     int pcFirst_bit;
     int pcSecond_bit;
     int rest = 0;
-    for (int i = 0; i <= max_length; i++) {
-        if (i < pcFirst.i_length) {
-            pcFirst_bit = pcFirst.pi_table[pcFirst.i_length - 1 - i];
-        }
-        else {
-            pcFirst_bit = 0;
-        }
-        if (i < pcSecond.i_length) {
-            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - 1 - i];
-        }
-        else {
-            pcSecond_bit = 0;
-        }
-        int sum = pcFirst_bit + pcSecond_bit + rest;
-        if (i < max_length) {
+    for (int i = 0; i < pcFirst.i_length; i++) {
+    CNumber resultMultiply;
+        pcFirst_bit = pcFirst.pi_table[pcFirst.i_length - 1 - i];
+        for (int j = 0; j < pcSecond.i_length; j++) {
+            int k = i * pcSecond.i_length + j;
+            if (i > 0) {
+                //zsuwanie wlewo ze wstawieniem zer
+                for (int zsuw = 0; zsuw < i; zsuw++) {
+                    resultMultiply.pi_table[resultMultiply.i_length - 1 - zsuw] = 0;
+                }
+            }
+            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - j];
+            int multi = pcFirst_bit * pcSecond_bit + rest;
             counter++;
-            if (sum >= NUMBER_SYSTEM) {
-                resultMultiply.pi_table[resultMultiply.i_length - 1 - i] = sum % NUMBER_SYSTEM;
-                rest = sum / NUMBER_SYSTEM;
+            if (multi >= NUMBER_SYSTEM) {
+                resultMultiply.pi_table[resultMultiply.i_length - j] = multi % NUMBER_SYSTEM;
+                rest = multi / NUMBER_SYSTEM;
             }
             else {
-                resultMultiply.pi_table[resultMultiply.i_length - 1 - i] = sum;
+                resultMultiply.pi_table[resultMultiply.i_length - j] = multi;
                 rest = 0;
             }
+            if (rest != 0) {
+                counter++;
+                resultMultiply.pi_table[resultMultiply.i_length - 1 - j] = rest;
+            }
+            
         }
-        else if (sum != 0) {
-            counter++;
-            resultMultiply.pi_table[resultMultiply.i_length - i - 1] = sum;
-        }
+        resultMultiply.pi_table = vLessArray(resultMultiply.pi_table, resultMultiply.i_length, counter);
+        resultMultiply.i_length = counter;
+        counter = 0;
+        resultSum = resultSum + resultMultiply;
+
     }
-    resultMultiply.pi_table = vLessArray(resultMultiply.pi_table, resultMultiply.i_length, counter);
-    resultMultiply.i_length = counter;
-    return resultMultiply;
+    //resultSum.pi_table = vLessArray(resultSum.pi_table, resultSum.i_length, counter);
+    //resultMultiply.i_length = counter;
+    return resultSum;
 }
 //Find bigger CNumber
 CNumber& CNumber::vBigger(CNumber& pcFirst, CNumber& pcSecond)

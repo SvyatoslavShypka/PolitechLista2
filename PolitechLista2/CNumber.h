@@ -27,7 +27,7 @@ public:
 	CNumber operator*(CNumber& pcOther);
 	CNumber vAdd(const CNumber pcFirst, const CNumber pcSecond);
 	CNumber vSub(const CNumber pcBigger, const CNumber pcLesser);
-	CNumber vMultiply(const CNumber pcBigger, const CNumber pcLesser);
+	CNumber vMultiply(const CNumber pcFirst, const CNumber pcSecond);
 	CNumber& vBigger(CNumber& pcFirst, CNumber& pcSecond);
 
 };
