@@ -13,6 +13,7 @@ public:
 	CNumber();
 	CNumber(CNumber&& other) noexcept; //Move construktor
 	CNumber(const CNumber& other);
+	CNumber operator+(int intValue) const;
 	~CNumber();
 	void vSet(int iNewVal);
 	bool vGetSign();

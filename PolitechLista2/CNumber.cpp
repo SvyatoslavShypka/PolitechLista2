@@ -32,6 +32,9 @@ CNumber::~CNumber()
 
 void CNumber::vSet(int iNewVal)
 {
+    delete[] pi_table;
+    pi_table = new int[DEFAULT_ARRAY_LENGTH];
+    i_length = DEFAULT_ARRAY_LENGTH;
     if (iNewVal < 0) {
         sign_minus = true;
         iNewVal = - iNewVal;
@@ -40,18 +43,19 @@ void CNumber::vSet(int iNewVal)
     int total_part = iNewVal;
     //int tmp_tablica[DEFAULT_ARRAY_LENGTH];
 
-    while (total_part != 0)
-    {
-        int rest_part = total_part % NUMBER_SYSTEM;
-        pi_table[i_length - 1 - counter] = rest_part;
-        total_part /= NUMBER_SYSTEM;
-        counter++;
-    }
-
     if (iNewVal == 0) {
         pi_table[i_length - 1] = 0;
         counter = 1;
+    } else {
+        while (total_part != 0)
+        {
+            int rest_part = total_part % NUMBER_SYSTEM;
+            pi_table[i_length - 1 - counter] = rest_part;
+            total_part /= NUMBER_SYSTEM;
+            counter++;
+        }
     }
+    
     pi_table = vLessArray(pi_table, i_length, counter);
     i_length = counter;
 }
@@ -319,6 +323,8 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     resultSub.i_length = counter;
     return resultSub;
 }
+
+/*
 CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
 {
     CNumber resultSum;
@@ -329,30 +335,32 @@ CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
     int pcSecond_bit;
     int rest = 0;
     for (int i = 0; i < pcFirst.i_length; i++) {
-    CNumber resultMultiply;
+        CNumber resultMultiply;
         pcFirst_bit = pcFirst.pi_table[pcFirst.i_length - 1 - i];
+        int k = 0;
         for (int j = 0; j < pcSecond.i_length; j++) {
-            int k = i * pcSecond.i_length + j;
+            //int k = i * pcSecond.i_length + j;
             if (i > 0) {
                 //zsuwanie wlewo ze wstawieniem zer
                 for (int zsuw = 0; zsuw < i; zsuw++) {
                     resultMultiply.pi_table[resultMultiply.i_length - 1 - zsuw] = 0;
                 }
+                k++;
             }
-            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - j];
+            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - 1 - j - k];
             int multi = pcFirst_bit * pcSecond_bit + rest;
             counter++;
             if (multi >= NUMBER_SYSTEM) {
-                resultMultiply.pi_table[resultMultiply.i_length - j] = multi % NUMBER_SYSTEM;
+                resultMultiply.pi_table[resultMultiply.i_length - 1 - j - k] = multi % NUMBER_SYSTEM;
                 rest = multi / NUMBER_SYSTEM;
             }
             else {
-                resultMultiply.pi_table[resultMultiply.i_length - j] = multi;
+                resultMultiply.pi_table[resultMultiply.i_length - 1 - j - k] = multi;
                 rest = 0;
             }
             if (rest != 0) {
                 counter++;
-                resultMultiply.pi_table[resultMultiply.i_length - 1 - j] = rest;
+                resultMultiply.pi_table[resultMultiply.i_length - 1 - j - k - 1] = rest;
             }
             
         }
@@ -366,6 +374,46 @@ CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
     //resultMultiply.i_length = counter;
     return resultSum;
 }
+*/
+
+CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
+{
+    CNumber resultSum;
+    resultSum.vSet(0);
+
+    for (int i = 0; i < pcFirst.i_length; ++i) {
+        CNumber resultMultiply;
+        CNumber tmpCNumber;
+        resultMultiply.vSet(0);
+
+        for (int j = 0; j < pcSecond.i_length; ++j) {
+            int product = pcFirst.pi_table[pcFirst.i_length - 1 - i] * pcSecond.pi_table[pcSecond.i_length - 1 - j];
+            tmpCNumber.vSet(product);
+            resultMultiply = resultMultiply + tmpCNumber;
+            if (j < pcSecond.i_length - 1) {
+                tmpCNumber.vSet(0); // Reset tmpCNumber to represent the multiplication by 10
+                tmpCNumber = (tmpCNumber + NUMBER_SYSTEM);
+                resultMultiply = resultMultiply * tmpCNumber;
+            }
+        }
+
+        resultSum = resultSum + resultMultiply;
+        if (i < pcFirst.i_length - 1) {
+            tmpCNumber.vSet(0); // Reset tmpCNumber to represent the multiplication by 10
+            tmpCNumber = tmpCNumber + NUMBER_SYSTEM;
+            resultSum = resultSum * tmpCNumber;
+        }
+    }
+
+    // Adjust the sign of the result
+    if (pcFirst.sign_minus != pcSecond.sign_minus) {
+        resultSum.sign_minus = true;
+    }
+
+    return resultSum;
+}
+
+
 //Find bigger CNumber
 CNumber& CNumber::vBigger(CNumber& pcFirst, CNumber& pcSecond)
 {
@@ -399,3 +447,12 @@ CNumber::CNumber(const CNumber& other) {
     }
 }
 
+CNumber CNumber::operator+(int intValue) const
+{
+    CNumber result = *this;
+    CNumber second;
+    second.vSet(intValue);
+    result.vSet(result);
+    result = result + second;
+    return result;
+}
