@@ -219,6 +219,22 @@ CNumber CNumber::operator-(CNumber& pcOther)
     return result;
 }
 
+CNumber CNumber::operator*(CNumber& pcOther)
+{
+    CNumber resultMulti;
+    resultMulti = vMultiply(*this, pcOther);
+    if (sign_minus == pcOther.sign_minus) {
+        //+A * +B = + (A*B)
+        //-A * -B = - (A*B)
+        resultMulti.sign_minus = false;
+    }
+    else {
+        resultMulti.sign_minus = true;
+    }
+
+    return resultMulti;
+}
+
 CNumber CNumber::vAdd(const CNumber pcFirst, const CNumber pcSecond)
 {
     CNumber resultAdd;
@@ -300,6 +316,48 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     resultSub.pi_table = vLessArray(resultSub.pi_table, resultSub.i_length, counter);
     resultSub.i_length = counter;
     return resultSub;
+}
+CNumber CNumber::vMultiply(const CNumber pcBigger, const CNumber pcLesser)
+{
+    CNumber resultMultiply;
+    int max_length = pcFirst.i_length > pcSecond.i_length ? pcFirst.i_length : pcSecond.i_length;
+    int counter = 0;
+    int pcFirst_bit;
+    int pcSecond_bit;
+    int rest = 0;
+    for (int i = 0; i <= max_length; i++) {
+        if (i < pcFirst.i_length) {
+            pcFirst_bit = pcFirst.pi_table[pcFirst.i_length - 1 - i];
+        }
+        else {
+            pcFirst_bit = 0;
+        }
+        if (i < pcSecond.i_length) {
+            pcSecond_bit = pcSecond.pi_table[pcSecond.i_length - 1 - i];
+        }
+        else {
+            pcSecond_bit = 0;
+        }
+        int sum = pcFirst_bit + pcSecond_bit + rest;
+        if (i < max_length) {
+            counter++;
+            if (sum >= NUMBER_SYSTEM) {
+                resultMultiply.pi_table[resultMultiply.i_length - 1 - i] = sum % NUMBER_SYSTEM;
+                rest = sum / NUMBER_SYSTEM;
+            }
+            else {
+                resultMultiply.pi_table[resultMultiply.i_length - 1 - i] = sum;
+                rest = 0;
+            }
+        }
+        else if (sum != 0) {
+            counter++;
+            resultMultiply.pi_table[resultMultiply.i_length - i - 1] = sum;
+        }
+    }
+    resultMultiply.pi_table = vLessArray(resultMultiply.pi_table, resultMultiply.i_length, counter);
+    resultMultiply.i_length = counter;
+    return resultMultiply;
 }
 //Find bigger CNumber
 CNumber& CNumber::vBigger(CNumber& pcFirst, CNumber& pcSecond)
