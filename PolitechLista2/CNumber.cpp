@@ -313,9 +313,13 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
         resultSub.pi_table[resultSub.i_length - 1 - i] = sub;
     }
     //delete first zeros
-    for (int i = resultSub.i_length - pcBigger.i_length; i < resultSub.i_length - 1; i++) {
-        if (resultSub.pi_table[i] == 0) {
+    bool skip = false;
+    for (int i = resultSub.i_length - pcBigger.i_length + 1; i < resultSub.i_length - 1; i++) {
+        if (resultSub.pi_table[i] == 0 && !skip) {
         counter--;
+        }
+        else {
+            skip = true;
         }
     }
     resultSub.pi_table = vLessArray(resultSub.pi_table, resultSub.i_length, counter);
