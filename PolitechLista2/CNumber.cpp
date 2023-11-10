@@ -70,11 +70,11 @@ void CNumber::vSet(CNumber& pcOther)
     pi_table = vLessArray(pi_table, i_length, pcOther.i_length);
 }
 
-int CNumber::vGetValue(CNumber& pcCNumber)
+int CNumber::vGetValue()
 {
     int result = 0;
-    for (int i = 0; i < pcCNumber.i_length; i++) {
-        result += pcCNumber.pi_table[i] * pow(10, pcCNumber.i_length - 1 - i);
+    for (int i = 0; i < i_length; i++) {
+        result += pi_table[i] * pow(10, i_length - 1 - i);
     }
     return result;
 }
@@ -424,7 +424,6 @@ CNumber CNumber::operator/(CNumber& pcOther)
     else {
         sign_minus = true;
     }
-
     return result;
 }
 
@@ -432,7 +431,7 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
 {
     CNumber result;
 
-    int divisor = vGetValue(pcDivisor);
+    int divisor = pcDivisor.vGetValue();
     // Result = zero
     if (pcDivident.i_length == 1 && pcDivident.pi_table[pcDivident.i_length - 1] == 0) {
         result.vSet(0);
@@ -440,7 +439,7 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
     }
 
     // Check for division by zero
-    if (pcDivisor.pi_table[pcDivisor.i_length - 1] == 0) {
+    if (pcDivisor.i_length == 1 && pcDivisor.pi_table[pcDivisor.i_length - 1] == 0) {
         cout << "Error: Division by zero!" << endl;
         return result;
     }

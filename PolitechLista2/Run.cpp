@@ -9,13 +9,19 @@ int main()
     CNumber c_num_0, c_num_1, c_num_2;
     c_num_1 = 333;
     //cout << (c_num_1.sToStr()) << endl;
-    c_num_2 = 0;
+    c_num_2 = 10;
     //cout << (c_num_2.sToStr()) << endl;
 
     // -
     c_num_0 = c_num_1 - c_num_2;
     cout << c_num_1.sToStr() << " - " << c_num_2.sToStr() << " = ";
-    cout << (c_num_0.sToStr()) << endl;
+    cout << (c_num_0.sToStr()) ;
+    if (c_num_0.vGetValue() == c_num_1.vGetValue() - c_num_2.vGetValue()) {
+        cout << "  -Ok" << endl;
+    }
+    else {
+        cout << "  *************INCORRECT" << endl;
+    }
 
     // +
     c_num_0 = c_num_1 + c_num_2;
