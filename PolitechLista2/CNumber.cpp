@@ -76,6 +76,9 @@ int CNumber::vGetValue()
     for (int i = 0; i < i_length; i++) {
         result += pi_table[i] * pow(10, i_length - 1 - i);
     }
+    if (this->sign_minus) {
+        result = - result;
+    }
     return result;
 }
 
@@ -318,9 +321,10 @@ CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
     int counter = 0;
     int pcFirst_bit;
     int pcSecond_bit;
-    int rest = 0;
+    int rest;
     for (int i = 0; i < pcFirst.i_length; i++) {
         CNumber resultMultiply;
+        rest = 0;
         pcFirst_bit = pcFirst.pi_table[pcFirst.i_length - 1 - i];
         int k = 0;
         for (int j = 0; j < pcSecond.i_length; j++) {
@@ -464,6 +468,10 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
             result.pi_table[counter - 1] = pcFirstDivident / divisor;
             pcFirstDivident *= 10;
         }
+    }
+    if (counter == 0) {
+        counter = 1;
+        result.pi_table[0] = 0;
     }
     //result.pi_table is cut after counter-1
     int* correctedArray = new int[counter];
