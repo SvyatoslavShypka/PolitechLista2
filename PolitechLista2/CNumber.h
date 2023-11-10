@@ -17,6 +17,7 @@ public:
 	~CNumber();
 	void vSet(int iNewVal);
 	void vSet(CNumber &pcNewVal);
+	int vGetValue(CNumber &pcCNumber);
 	CNumber vDiv(CNumber& pcDivident, CNumber pcDivisor);
 	int* vLessArray(int* bigArray, int old_length, int i_length);
 	string sToStr();

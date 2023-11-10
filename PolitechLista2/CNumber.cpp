@@ -70,6 +70,15 @@ void CNumber::vSet(CNumber& pcOther)
     pi_table = vLessArray(pi_table, i_length, pcOther.i_length);
 }
 
+int CNumber::vGetValue(CNumber& pcCNumber)
+{
+    int result = 0;
+    for (int i = 0; i < pcCNumber.i_length; i++) {
+        result += pcCNumber.pi_table[i] * pow(10, pcCNumber.i_length - 1 - i);
+    }
+    return result;
+}
+
 int* CNumber::vLessArray(int* bigArray, int old_length, const int new_length)
 {
     int* resultArray = new int[new_length];
@@ -424,6 +433,8 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
     CNumber result;
     result.vSet(0);
 
+    int divisor = vGetValue(pcDivisor);
+
     // Result = zero
     if (pcDivident.i_length == 1 && pcDivident.pi_table[pcDivident.i_length - 1] == 0) {
         return result;
@@ -435,37 +446,30 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
         return result;
     }
 
-    //// Copy the dividend
-    //CNumber dividend = *this;
-    //CNumber divisor = pcOther;
-    //CNumber tmp;
+    int rest = 0;
+    int pcFirstDivident = 0;
+    int counter = 0;
+    bool first = true;
+    for (int i = 0; i < pcDivident.i_length; i++) {
+        pcFirstDivident += pcDivident.pi_table[i];
+        if (pcFirstDivident / divisor > 0) {
+            counter++;
+            result.pi_table[counter - 1] = pcFirstDivident / divisor;
+            rest = pcFirstDivident % divisor;
+            pcFirstDivident = rest * 10;
+        } else if (first) {
+            pcFirstDivident *= 10;
+        }
+        else if (i != pcDivident.i_length - 1) {
+            counter++;
+            result.pi_table[counter - 1] = pcFirstDivident / divisor;
+            pcFirstDivident *= 10;
+        }
+        
+    }
+    //TODO result.pi_table cut after counter-1
+     
 
-    //// Normalize divisor and dividend
-    //int shift = 0;
-    //while (divisor.pi_table[divisor.i_length - 1] < NUMBER_SYSTEM / 2) {
-    //    tmp.vSet(2);
-    //    divisor = divisor * tmp;
-    //    shift++;
-    //}
-
-    //// Perform long division
-    //while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
-    //    CNumber quotientDigit;
-    //    quotientDigit.vSet(0);
-
-    //    while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
-    //        dividend = dividend - divisor;
-    //        quotientDigit = quotientDigit + 1;
-    //    }
-
-    //    result = result * 10 + quotientDigit;
-    //    divisor = divisor / 2;
-    //    shift--;
-
-    //    if (shift < 0) {
-    //        break;  // Stop when the desired precision is reached (whole part only)
-    //    }
-    //}
 
     return result;
 }
