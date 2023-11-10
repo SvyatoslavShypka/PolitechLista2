@@ -15,18 +15,15 @@ CNumber::CNumber(CNumber&& other)
     i_length = other.i_length;
     sign_minus = other.sign_minus;
     pi_table = other.pi_table;
-    other.pi_table = NULL; // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
+    other.pi_table = NULL; // Zabezpieczenie przed ponownym zwolnieniem
 }
 
 CNumber::~CNumber()
 {
-    //cout << pi_table << endl;
-    //cout << *pi_table << endl;
     if (pi_table != NULL) {
         delete[] pi_table;
         pi_table = NULL; // Zabezpieczenie przed ponownym zwolnieniem
     }
-    //cout << *pi_table << endl;
     //cout << destr_text << endl;
 }
 
@@ -41,7 +38,6 @@ void CNumber::vSet(int iNewVal)
     }
     int counter = 0;
     int total_part = iNewVal;
-    //int tmp_tablica[DEFAULT_ARRAY_LENGTH];
 
     if (iNewVal == 0) {
         pi_table[i_length - 1] = 0;
@@ -58,16 +54,6 @@ void CNumber::vSet(int iNewVal)
     
     pi_table = vLessArray(pi_table, i_length, counter);
     i_length = counter;
-}
-
-bool CNumber::vGetSign()
-{
-    if (sign_minus) {
-        return "-";
-    }
-    else {
-        return "";
-    }
 }
 
 void CNumber::vSet(CNumber& pcOther)
@@ -385,13 +371,8 @@ CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
         resultSum = resultSum + resultMultiply;
 
     }
-    //resultSum.pi_table = vLessArray(resultSum.pi_table, resultSum.i_length, counter);
-    //resultMultiply.i_length = counter;
     return resultSum;
 }
-
-
-
 
 //Find bigger CNumber
 CNumber& CNumber::vBigger(CNumber& pcFirst, CNumber& pcSecond)

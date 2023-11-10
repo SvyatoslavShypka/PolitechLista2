@@ -16,7 +16,6 @@ public:
 	CNumber operator+(int intValue) const;
 	~CNumber();
 	void vSet(int iNewVal);
-	bool vGetSign();
 	void vSet(CNumber &pcNewVal);
 	int* vLessArray(int* bigArray, int old_length, int i_length);
 	string sToStr();
