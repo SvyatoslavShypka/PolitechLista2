@@ -11,7 +11,7 @@ private:
 
 public:
 	CNumber();
-	CNumber(CNumber&& other) noexcept; //Move construktor
+	CNumber(CNumber&& other); //Move construktor
 	CNumber(const CNumber& other);
 	CNumber operator+(int intValue) const;
 	~CNumber();
@@ -22,10 +22,11 @@ public:
 	string sToStr();
 	void operator=(const int iValue);
 	void operator=(const CNumber &pcOther);
-	CNumber& operator=(CNumber&& other) noexcept;
+	CNumber& operator=(CNumber&& other);
 	CNumber operator+(CNumber& pcOther);
 	CNumber operator-(CNumber& pcOther);
 	CNumber operator*(CNumber& pcOther);
+	CNumber operator/(CNumber& pcOther);
 	CNumber vAdd(const CNumber pcFirst, const CNumber pcSecond);
 	CNumber vSub(const CNumber pcBigger, const CNumber pcLesser);
 	CNumber vMultiply(const CNumber pcFirst, const CNumber pcSecond);

@@ -10,21 +10,21 @@ CNumber::CNumber()
     pi_table = new int[DEFAULT_ARRAY_LENGTH];
 }
 
-CNumber::CNumber(CNumber&& other) noexcept 
+CNumber::CNumber(CNumber&& other) 
 {
     i_length = other.i_length;
     sign_minus = other.sign_minus;
     pi_table = other.pi_table;
-    other.pi_table = nullptr; // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
+    other.pi_table = NULL; // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
 }
 
 CNumber::~CNumber()
 {
     //cout << pi_table << endl;
     //cout << *pi_table << endl;
-    if (pi_table != nullptr) {
+    if (pi_table != NULL) {
         delete[] pi_table;
-        pi_table = nullptr; // Zabezpieczenie przed ponownym zwolnieniem
+        pi_table = NULL; // Zabezpieczenie przed ponownym zwolnieniem
     }
     //cout << *pi_table << endl;
     //cout << destr_text << endl;
@@ -72,7 +72,7 @@ bool CNumber::vGetSign()
 
 void CNumber::vSet(CNumber& pcOther)
 {
-    if (pi_table != nullptr) {
+    if (pi_table != NULL) {
         delete[] pi_table;
     }
     pi_table = new int[pcOther.i_length];
@@ -93,18 +93,6 @@ int* CNumber::vLessArray(int* bigArray, int old_length, const int new_length)
     }
     return resultArray;
 }
-
-
-//int* CNumber::vLessArray(int* bigArray, int old_length, const int new_length)
-//{
-//    int* resultArray = new int[new_length]; 
-//    for (int i = 0; i < new_length; i++)
-//    {
-//        resultArray[i] = bigArray[old_length - new_length + i];
-//    }
-//    delete[] bigArray;
-//    return resultArray;
-//}
 
 string CNumber::sToStr()
 {
@@ -140,10 +128,10 @@ void CNumber::operator=(const CNumber& pcOther) {
     this->vSet((CNumber& )pcOther);
 }
 
-CNumber& CNumber::operator=(CNumber&& other) noexcept {
+CNumber& CNumber::operator=(CNumber&& other) {
     if (this != &other) {
         // Zwolnij zasoby w obecnym obiekcie
-        if (pi_table != nullptr) {
+        if (pi_table != NULL) {
             delete[] pi_table;
         }
 
@@ -154,7 +142,7 @@ CNumber& CNumber::operator=(CNumber&& other) noexcept {
 
 
         // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
-        other.pi_table = nullptr;
+        other.pi_table = NULL;
     }
     return *this;
 }
@@ -432,3 +420,54 @@ CNumber CNumber::operator+(int intValue) const
     result = result + second;
     return result;
 }
+
+//CNumber CNumber::operator/(CNumber& pcOther)
+//{
+//    CNumber result;
+//    result.vSet(0);
+//
+//    // Result = zero
+//    if (this->i_length == 1 && this->pi_table[this->i_length - 1] == 0) {
+//        return result;
+//    }
+//
+//    // Check for division by zero
+//    if (pcOther.pi_table[pcOther.i_length - 1] == 0) {
+//        cout << "Error: Division by zero!" << endl;
+//        return result;
+//    }
+//
+//    // Copy the dividend
+//    CNumber dividend = *this;
+//    CNumber divisor = pcOther;
+//    CNumber tmp;
+//
+//    // Normalize divisor and dividend
+//    int shift = 0;
+//    while (divisor.pi_table[divisor.i_length - 1] < NUMBER_SYSTEM / 2) {
+//        tmp.vSet(2);
+//        divisor = divisor * tmp;
+//        shift++;
+//    }
+//
+//    // Perform long division
+//    while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
+//        CNumber quotientDigit;
+//        quotientDigit.vSet(0);
+//
+//        while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
+//            dividend = dividend - divisor;
+//            quotientDigit = quotientDigit + 1;
+//        }
+//
+//        result = result * 10 + quotientDigit;
+//        divisor = divisor / 2;
+//        shift--;
+//
+//        if (shift < 0) {
+//            break;  // Stop when the desired precision is reached (whole part only)
+//        }
+//    }
+//
+//    return result;
+//}
