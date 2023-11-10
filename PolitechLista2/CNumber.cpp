@@ -420,7 +420,7 @@ CNumber CNumber::operator/(CNumber& pcOther)
 {
     CNumber result;
     result = vDiv(*this, pcOther);
-    if (result.sign_minus == pcOther.sign_minus) {
+    if (sign_minus == pcOther.sign_minus) {
         //+A / +B = + (A/B)
         //-A / -B = + (A/B)
         result.sign_minus = false;
@@ -463,7 +463,7 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
         } else if (first) {
             pcFirstDivident *= 10;
         }
-        else if (i != pcDivident.i_length - 1) {
+        else {
             counter++;
             result.pi_table[counter - 1] = pcFirstDivident / divisor;
             pcFirstDivident *= 10;

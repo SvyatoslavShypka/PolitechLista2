@@ -9,11 +9,11 @@ int main()
     CNumber c_num_0, c_num_1, c_num_2;
 
     srand((unsigned)time(NULL));
-    for (int i = 0; i < 20; i++) {
-        c_num_1 = rand() % (10000) - 10000;
-        //c_num_1 = 6;
-        //c_num_2 = -3;
-        c_num_2 = rand() % (10000) - 10000;
+    for (int i = 0; i < 1000; i++) {
+        c_num_1 = rand() % (100000) - 1000 / 2;
+        //c_num_1 = 38649;
+        //c_num_2 = 35;
+        c_num_2 = rand() % (100000) - 1000 / 2;
 
         // -
         c_num_0 = c_num_1 - c_num_2;
@@ -23,7 +23,7 @@ int main()
             cout << "  -Ok" << endl;
         }
         else {
-            cout << "  *************INCORRECT" << endl;
+            cout << "  *********************************************************INCORRECT" << endl;
         }
 
         // +
@@ -34,7 +34,7 @@ int main()
             cout << "  -Ok" << endl;
         }
         else {
-            cout << "  *************INCORRECT" << endl;
+            cout << "  *********************************************************INCORRECT" << endl;
         }
 
         // *
@@ -45,7 +45,7 @@ int main()
             cout << "  -Ok" << endl;
         }
         else {
-            cout << "  *************INCORRECT" << endl;
+            cout << "  *********************************************************INCORRECT" << endl;
         }
 
         // /
@@ -56,7 +56,7 @@ int main()
             cout << "  -Ok" << endl;
         }
         else {
-            cout << "  *************INCORRECT" << endl;
+            cout << "  *********************************************************INCORRECT" << endl;
         }
     }
 
