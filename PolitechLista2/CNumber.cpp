@@ -403,53 +403,70 @@ CNumber CNumber::operator+(int intValue) const
     return result;
 }
 
-//CNumber CNumber::operator/(CNumber& pcOther)
-//{
-//    CNumber result;
-//    result.vSet(0);
-//
-//    // Result = zero
-//    if (this->i_length == 1 && this->pi_table[this->i_length - 1] == 0) {
-//        return result;
-//    }
-//
-//    // Check for division by zero
-//    if (pcOther.pi_table[pcOther.i_length - 1] == 0) {
-//        cout << "Error: Division by zero!" << endl;
-//        return result;
-//    }
-//
-//    // Copy the dividend
-//    CNumber dividend = *this;
-//    CNumber divisor = pcOther;
-//    CNumber tmp;
-//
-//    // Normalize divisor and dividend
-//    int shift = 0;
-//    while (divisor.pi_table[divisor.i_length - 1] < NUMBER_SYSTEM / 2) {
-//        tmp.vSet(2);
-//        divisor = divisor * tmp;
-//        shift++;
-//    }
-//
-//    // Perform long division
-//    while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
-//        CNumber quotientDigit;
-//        quotientDigit.vSet(0);
-//
-//        while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
-//            dividend = dividend - divisor;
-//            quotientDigit = quotientDigit + 1;
-//        }
-//
-//        result = result * 10 + quotientDigit;
-//        divisor = divisor / 2;
-//        shift--;
-//
-//        if (shift < 0) {
-//            break;  // Stop when the desired precision is reached (whole part only)
-//        }
-//    }
-//
-//    return result;
-//}
+CNumber CNumber::operator/(CNumber& pcOther)
+{
+    CNumber result;
+    result = vDiv(*this, pcOther);
+    if (sign_minus == pcOther.sign_minus) {
+        //+A / +B = + (A/B)
+        //-A / -B = + (A/B)
+        sign_minus = false;
+    }
+    else {
+        sign_minus = true;
+    }
+
+    return result;
+}
+
+CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
+{
+    CNumber result;
+    result.vSet(0);
+
+    // Result = zero
+    if (pcDivident.i_length == 1 && pcDivident.pi_table[pcDivident.i_length - 1] == 0) {
+        return result;
+    }
+
+    // Check for division by zero
+    if (pcDivisor.pi_table[pcDivisor.i_length - 1] == 0) {
+        cout << "Error: Division by zero!" << endl;
+        return result;
+    }
+
+    //// Copy the dividend
+    //CNumber dividend = *this;
+    //CNumber divisor = pcOther;
+    //CNumber tmp;
+
+    //// Normalize divisor and dividend
+    //int shift = 0;
+    //while (divisor.pi_table[divisor.i_length - 1] < NUMBER_SYSTEM / 2) {
+    //    tmp.vSet(2);
+    //    divisor = divisor * tmp;
+    //    shift++;
+    //}
+
+    //// Perform long division
+    //while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
+    //    CNumber quotientDigit;
+    //    quotientDigit.vSet(0);
+
+    //    while (dividend.vBigger(dividend, divisor) || dividend == divisor) {
+    //        dividend = dividend - divisor;
+    //        quotientDigit = quotientDigit + 1;
+    //    }
+
+    //    result = result * 10 + quotientDigit;
+    //    divisor = divisor / 2;
+    //    shift--;
+
+    //    if (shift < 0) {
+    //        break;  // Stop when the desired precision is reached (whole part only)
+    //    }
+    //}
+
+    return result;
+}
+
