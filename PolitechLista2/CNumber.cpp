@@ -91,12 +91,6 @@ string CNumber::sToStr()
     }
     for (int i = 0; i < i_length; i++) {
         result += to_string(pi_table[i]);
-        //if (i < i_length - 1) {
-        //    result += "";
-        //}
-        //else {
-        //    result = result + "\n";
-        //}
     }
     return result;
 }
@@ -125,7 +119,6 @@ CNumber& CNumber::operator=(CNumber&& other) {
         i_length = other.i_length;
         sign_minus = other.sign_minus;
         pi_table = other.pi_table;
-
 
         // Zabezpieczenie przed zwolnieniem pamięci przez inny obiekt
         other.pi_table = NULL;
@@ -187,9 +180,6 @@ CNumber CNumber::operator-(CNumber& pcOther)
         pcOther.sign_minus = !pcOther.sign_minus;
         CNumber& bigger = vBigger(*this, pcOther);
         CNumber lesser;
-        //cout << "&Bigger: " << &bigger << endl;
-        //cout << "this: " << this << endl;
-        //cout << "pcOther: " << &pcOther << endl;
 
         if (&bigger == this) {
             lesser = pcOther;
@@ -197,15 +187,11 @@ CNumber CNumber::operator-(CNumber& pcOther)
         else {
             lesser = *this;
         }
-        //cout << "Bigger: " << bigger.sToStr();
-        //cout << "Lesser: " << lesser.sToStr();
         result = vSub(bigger, lesser);
-        //cout << "Result: " << result.sToStr();
         // "sign of Bigger +/-"
         result.sign_minus = bigger.sign_minus;
         // put back sign for B
         pcOther.sign_minus = !pcOther.sign_minus;
-        //cout << "Result: " << result.sToStr();
     }
     return result;
 }
@@ -398,7 +384,7 @@ CNumber& CNumber::vBigger(CNumber& pcFirst, CNumber& pcSecond)
 }
 
 CNumber::CNumber(const CNumber& other) {
-    // Skopiuj pola z obiektu other do bieżącego obiektu
+    // Kopiujemy pola z obiektu other do bieżącego obiektu
     i_length = other.i_length;
     sign_minus = other.sign_minus;
     pi_table = new int[i_length];
