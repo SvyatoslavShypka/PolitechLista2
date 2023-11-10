@@ -431,7 +431,7 @@ CNumber CNumber::operator/(CNumber& pcOther)
 CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
 {
     CNumber result;
-    result.vSet(0);
+    //result.vSet(0);
 
     int divisor = vGetValue(pcDivisor);
 
@@ -468,9 +468,13 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
         
     }
     //TODO result.pi_table cut after counter-1
-     
-
-
+    int* correctedArray = new int[counter];
+    for (int i = 0; i < counter; i++) {
+        correctedArray[i] = result.pi_table[i];
+    }
+    delete[] result.pi_table;
+    result.pi_table = correctedArray;
+    result.i_length = counter;
     return result;
 }
 
