@@ -433,7 +433,6 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
     CNumber result;
 
     int divisor = vGetValue(pcDivisor);
-
     // Result = zero
     if (pcDivident.i_length == 1 && pcDivident.pi_table[pcDivident.i_length - 1] == 0) {
         result.vSet(0);
@@ -466,9 +465,8 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
             result.pi_table[counter - 1] = pcFirstDivident / divisor;
             pcFirstDivident *= 10;
         }
-        
     }
-    //TODO result.pi_table cut after counter-1
+    //result.pi_table is cut after counter-1
     int* correctedArray = new int[counter];
     for (int i = 0; i < counter; i++) {
         correctedArray[i] = result.pi_table[i];
