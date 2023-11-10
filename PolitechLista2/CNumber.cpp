@@ -420,13 +420,13 @@ CNumber CNumber::operator/(CNumber& pcOther)
 {
     CNumber result;
     result = vDiv(*this, pcOther);
-    if (sign_minus == pcOther.sign_minus) {
+    if (result.sign_minus == pcOther.sign_minus) {
         //+A / +B = + (A/B)
         //-A / -B = + (A/B)
-        sign_minus = false;
+        result.sign_minus = false;
     }
     else {
-        sign_minus = true;
+        result.sign_minus = true;
     }
     return result;
 }
@@ -435,7 +435,7 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
 {
     CNumber result;
 
-    int divisor = pcDivisor.vGetValue();
+    int divisor = abs(pcDivisor.vGetValue());
     // Result = zero
     if (pcDivident.i_length == 1 && pcDivident.pi_table[pcDivident.i_length - 1] == 0) {
         result.vSet(0);
