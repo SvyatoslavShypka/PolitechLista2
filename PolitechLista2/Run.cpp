@@ -7,9 +7,9 @@ using namespace std;
 int main()
 {
     CNumber c_num_0, c_num_1, c_num_2;
-    c_num_1 = 625;
+    c_num_1 = 333;
     //cout << (c_num_1.sToStr()) << endl;
-    c_num_2 = 3;
+    c_num_2 = 0;
     //cout << (c_num_2.sToStr()) << endl;
 
     // -

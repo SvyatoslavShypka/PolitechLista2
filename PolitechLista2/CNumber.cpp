@@ -431,12 +431,12 @@ CNumber CNumber::operator/(CNumber& pcOther)
 CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
 {
     CNumber result;
-    //result.vSet(0);
 
     int divisor = vGetValue(pcDivisor);
 
     // Result = zero
     if (pcDivident.i_length == 1 && pcDivident.pi_table[pcDivident.i_length - 1] == 0) {
+        result.vSet(0);
         return result;
     }
 
@@ -457,6 +457,7 @@ CNumber CNumber::vDiv(CNumber& pcDivident, CNumber pcDivisor)
             result.pi_table[counter - 1] = pcFirstDivident / divisor;
             rest = pcFirstDivident % divisor;
             pcFirstDivident = rest * 10;
+            first = false;
         } else if (first) {
             pcFirstDivident *= 10;
         }
