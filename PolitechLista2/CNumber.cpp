@@ -314,12 +314,13 @@ CNumber CNumber::vSub(const CNumber pcBigger, const CNumber pcLesser)
     }
     //delete first zeros
     bool skip = false;
-    for (int i = resultSub.i_length - pcBigger.i_length + 1; i < resultSub.i_length - 1; i++) {
-        if (resultSub.pi_table[i] == 0 && !skip) {
-        counter--;
-        }
-        else {
+    int size = counter;
+    for (int i = resultSub.i_length - size; i < resultSub.i_length - 1; i++) {
+        if (resultSub.pi_table[i] != 0) {
             skip = true;
+        }
+        else if (!skip) {
+            counter--;
         }
     }
     resultSub.pi_table = vLessArray(resultSub.pi_table, resultSub.i_length, counter);
@@ -362,11 +363,21 @@ CNumber CNumber::vMultiply(const CNumber pcFirst, const CNumber pcSecond)
                 resultMultiply.pi_table[resultMultiply.i_length - 1 - j - k] = multi;
                 rest = 0;
             }
-            if (rest != 0) {
+            if (j == pcSecond.i_length - 1 && rest != 0) {
                 counter++;
                 resultMultiply.pi_table[resultMultiply.i_length - 1 - j - k - 1] = rest;
             }
-            
+        }
+        //delete first zeros
+        bool skip = false;
+        int size = counter;
+        for (int i = resultMultiply.i_length - size; i < resultMultiply.i_length - 1; i++) {
+            if (resultMultiply.pi_table[i] != 0) {
+                skip = true;
+            }
+            else if (!skip) {
+                counter--;
+            }
         }
         resultMultiply.pi_table = vLessArray(resultMultiply.pi_table, resultMultiply.i_length, counter);
         resultMultiply.i_length = counter;
